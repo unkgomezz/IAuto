@@ -29,7 +29,7 @@ chrome_user_data_dir = r"C:\Users\SEU-USUARIO\AppData\Local\Google\Chrome\User D
 chrome_profile_dir = "Profile SEUPERFIL"
 
 # Cole aqui o caminho que está o txt da letra
-txt_path = "D:/projects/IAuto/venv/IAutoAPI/letra.txt"
+txt_path = "D:/projects/IAuto/venv/IAuto/letra.txt"
 
 #Cole aqui o caminho que você quer que os arquivos sejam salvos
 caminho_imagens = r"C:\Users\SEU-USUARIO\Dados de Aplicativos\Desktop\Imagens"

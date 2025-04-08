@@ -40,8 +40,8 @@ cd venv
 
 1. Clone o repositório
 ```bash
-git clone https://github.com/unkgomezz/IAutoAPI.git
-cd IAutoAPI
+git clone https://github.com/unkgomezz/IAuto.git
+cd IAuto
 ```
 
 3. Instale as dependências
