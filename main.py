@@ -1,20 +1,20 @@
-#_______________________________________________________________________________________________________________________________
-#|                                                                                                                              |
-#|       _____/\\\\\\\\\\\\______________________________________________________________________________                       |
-#|        ___/\\\//////////_______________________________________________________________________________                      |
-#|         __/\\\__________________________________________________________________________________________                     |
-#|          _\/\\\____/\\\\\\\_____/\\\\\_______/\\\\\__/\\\\\_______/\\\\\\\\___/\\\\\\\\\\\__/\\\\\\\\\\\_                    |
-#|           _\/\\\___\/////\\\___/\\\///\\\___/\\\///\\\\\///\\\___/\\\/////\\\_\///////\\\/__\///////\\\/__                   |
-#|            _\/\\\_______\/\\\__/\\\__\//\\\_\/\\\_\//\\\__\/\\\__/\\\\\\\\\\\_______/\\\/_________/\\\/____                  |
-#|             _\/\\\_______\/\\\_\//\\\__/\\\__\/\\\__\/\\\__\/\\\_\//\\///////______/\\\/_________/\\\/______                 |
-#|              _\//\\\\\\\\\\\\/___\///\\\\\/___\/\\\__\/\\\__\/\\\__\//\\\\\\\\\\__/\\\\\\\\\\\__/\\\\\\\\\\\_                |
-#|               __\////////////_______\/////_____\///___\///___\///____\//////////__\///////////__\///////////__               |
-#|                                                                                                                              |
-#|______________________________________________________________________________________________________________________________|
-#|                                                                                                                              |  
-#|                                 IAuto Full - Version 3.0 - 06/04/2025 - By Gomezz                                            |
-#|                                 = Using Deep Seek V3, Leonardo AI and Hailuo AI =                                            |
-#|______________________________________________________________________________________________________________________________|
+#   _______________________________________________________________________________________________________________________________
+#   |                                                                                                                              |
+#   |           _____/\\\\\\\\\\\\______________________________________________________________________________                   |
+#   |            ___/\\\//////////_______________________________________________________________________________                  |
+#   |             __/\\\__________________________________________________________________________________________                 |
+#   |              _\/\\\____/\\\\\\\_____/\\\\\_______/\\\\\__/\\\\\_______/\\\\\\\\___/\\\\\\\\\\\__/\\\\\\\\\\\_                |
+#   |               _\/\\\___\/////\\\___/\\\///\\\___/\\\///\\\\\///\\\___/\\\/////\\\_\///////\\\/__\///////\\\/__               |
+#   |                _\/\\\_______\/\\\__/\\\__\//\\\_\/\\\_\//\\\__\/\\\__/\\\\\\\\\\\_______/\\\/_________/\\\/____              |
+#   |                 _\/\\\_______\/\\\_\//\\\__/\\\__\/\\\__\/\\\__\/\\\_\//\\///////______/\\\/_________/\\\/______             |
+#   |                  _\//\\\\\\\\\\\\/___\///\\\\\/___\/\\\__\/\\\__\/\\\__\//\\\\\\\\\\__/\\\\\\\\\\\__/\\\\\\\\\\\_            |
+#   |                   __\////////////_______\/////_____\///___\///___\///____\//////////__\///////////__\///////////__           |
+#   |                                                                                                                              |
+#   |______________________________________________________________________________________________________________________________|
+#   |                                                                                                                              |  
+#   |                                       IAuto Full - Version 1.1 - 08/04/2025 - By Gomezz                                      |
+#   |                                       = Using Deep Seek V3, Leonardo AI and Hailuo AI =                                      |
+#   |______________________________________________________________________________________________________________________________|
                                                                                                         
 # Importações
 import time
@@ -24,8 +24,8 @@ import openai
 import httpx
 import os
 import glob
-import config
 import json
+import config
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -63,45 +63,63 @@ time.sleep(2)
 print(f"\033[95m🧠 [IAuto] \033[94mSistema inicializado com sucesso.")
 print("\n")
 
+# Função para dividir a letra da música proporcionalmente
+def dividir_letra_em_partes(letra, partes):
+    linhas = [linha.strip() for linha in letra.strip().split("\n") if linha.strip()]
+    total_linhas = len(linhas)
+    tamanho_parte = max(1, total_linhas // partes)
+    
+    resultado = []
+    for i in range(partes):
+        inicio = i * tamanho_parte
+        fim = (i + 1) * tamanho_parte if i < partes - 1 else total_linhas
+        parte = "\n".join(linhas[inicio:fim])
+        resultado.append(parte)
+    return resultado
+
 # Função para gerar os prompts
 def gerar_prompts(letra, quantidade):
     prompts_imagem = []
     prompts_video = []
 
-    # Prompt para imagem
+    # Prompt base para imagem
     system_prompt_imagem = (
-        "You are an expert at transforming song lyrics into highly visual descriptions for AI image generation."
-        "Images should be in a cartoon-style animation suitable for children."
-        "Each prompt should describe only ONE unique, self-contained scene."
-        "DO NOT include multiple versions, alternate scenes, or extended narratives."
-        "Use short, clear, and playful language suitable for children."
-        "Limit description to a maximum of 3 sentences per prompt."
-        "Your goal is to vividly illustrate the meaning or emotion of the lyrics through a single cartoon-like moment."
-        "Ultra detailed, 32k uhd, 3d rendered style with child-like graphics, computer graphics, colorful elements, vivid, beautiful, fun, 3d modeling."
-        "Always include this at the beginning of all prompts: 'Ultra detailed, 32k uhd, 3d rendered style with childish graphics, CG, colorful elements, vivid, beautiful, fun, 3d modeling.'"
-        "Be creative, use background elements and a beautiful and comfortable setting."
+        "You are an expert at transforming song lyrics into highly visual descriptions for AI image generation. "
+        "Images should be in a cartoon-style animation suitable for children. "
+        "Each prompt should describe only ONE unique, self-contained scene. "
+        "DO NOT include multiple versions, alternate scenes, or extended narratives. "
+        "Use short, clear, and playful language suitable for children. "
+        "Limit description to a maximum of 3 sentences per prompt. "
+        "Your goal is to vividly illustrate the meaning or emotion of the lyrics through a single cartoon-like moment. "
+        "Ultra detailed, 32k uhd, 3d rendered style with child-like graphics, computer graphics, colorful elements, vivid, beautiful, fun, 3d modeling. "
+        "Always include this at the beginning of all prompts: "
+        "'Ultra detailed, 32k uhd, 3d rendered style with childish graphics, CG, colorful elements, vivid, beautiful, fun, 3d modeling.' "
+        "Be creative, use background elements and a beautiful and comfortable setting. "
+        "Images must maintain logical progression."
     )
 
-    # Prompt para vídeo
+    # Prompt base para vídeo (usará como input o prompt da imagem)
     system_prompt_video = (
-        "You are an expert at turning song lyrics into animated video scene descriptions."
-        "Describe a short animated scene in a cartoon style suitable for children based on the lyrics."
-        "Include camera movement, character actions, and background animation, keeping it light, smooth, and magical."
-        "Use short, fun sentences, no more than 3 per prompt, and be vivid and engaging."
-        "Your goal is to vividly illustrate the meaning or emotion of the lyrics through a single cartoon-like moment."
-        "Ultra detailed, 32k uhd, 3d rendered style with childish graphics, computer graphics, colorful elements, vivid, beautiful, fun, 3d modeling."
-        "Always include this at the beginning of every prompt: 'Ultra detailed, 32k uhd, 3d rendered style with childish graphics, computer graphics, colorful elements, vivid, beautiful, fun, 3d modeling.'"
-        "Be creative, use background elements and a beautiful and comfortable setting."
+        "You are an expert at turning descriptions of cartoon images into short animated scene ideas."
+        "Describe a short animated scene based on the image prompt, in a kid-friendly cartoon style."
+        "Include smooth camera movements, character actions, and fun background animation."
+        "Use short, fun sentences, no more than 3 per prompt."
+        "Always include this at the beginning:"
+        "'Ultra detailed, 32k uhd, 3d rendered style with kid-friendly graphics, CG, colorful elements, vivid, beautiful, fun, 3d modeling.'"
+        "Use simple motion prompts."
+        "DO NOT make prompts complex."
+        "Just do the basics."
     )
 
+    partes_letra = dividir_letra_em_partes(letra, quantidade)
     time.sleep(3)
-    print(f"\033[95m🤖 [Deep Seek] \033[94mConectado a API com sucesso.")
+    print(f"\033[95m🤖 [Deep Seek] \033[94mConectado à API com sucesso.")
     time.sleep(2)
 
-    for i in range(quantidade):
+    for i, trecho in enumerate(partes_letra):
         print(f"\033[95m🤖 [Deep Seek] \033[94mGeração do prompt {i+1}/{quantidade} em progresso:")
 
-        # Prompt de imagem
+        # Gera prompt de imagem com base no trecho
         resposta_img = httpx.post(
             "https://openrouter.ai/api/v1/chat/completions",
             headers={
@@ -112,12 +130,20 @@ def gerar_prompts(letra, quantidade):
                 "model": "deepseek/deepseek-chat",
                 "messages": [
                     {"role": "system", "content": system_prompt_imagem},
-                    {"role": "user", "content": letra}
+                    {"role": "user", "content": trecho}
                 ]
             }
         )
 
-        # Prompt de vídeo
+        if resposta_img.status_code == 200:
+            prompt_imagem = resposta_img.json()["choices"][0]["message"]["content"].strip()
+            print(f"\033[95m🤖 [Deep Seek] \033[94mPrompt de imagem gerado com sucesso.")
+            prompts_imagem.append(prompt_imagem)
+        else:
+            print(f"\033[91m🤖 Erro ao gerar prompt de imagem {i+1}: {resposta_img.text}")
+            continue  # pula para o próximo
+
+        # Gera prompt de vídeo baseado no prompt da imagem
         resposta_vid = httpx.post(
             "https://openrouter.ai/api/v1/chat/completions",
             headers={
@@ -128,23 +154,15 @@ def gerar_prompts(letra, quantidade):
                 "model": "deepseek/deepseek-chat",
                 "messages": [
                     {"role": "system", "content": system_prompt_video},
-                    {"role": "user", "content": letra}
+                    {"role": "user", "content": prompt_imagem}
                 ]
             }
         )
 
-        if resposta_img.status_code == 200:
-            prompt_imagem = resposta_img.json()["choices"][0]["message"]["content"]
-            print(f"\033[95m🤖 [Deep Seek] \033[94mPrompt de imagem gerado com sucesso.")
-            prompts_imagem.append(prompt_imagem.strip())
-            time.sleep(2)
-        else:
-            print(f"\033[91m🤖 Erro ao gerar prompt de imagem {i+1}: {resposta_img.text}")
-
         if resposta_vid.status_code == 200:
-            prompt_video = resposta_vid.json()["choices"][0]["message"]["content"]
+            prompt_video = resposta_vid.json()["choices"][0]["message"]["content"].strip()
             print(f"\033[95m🤖 [Deep Seek] \033[94mPrompt de vídeo gerado com sucesso.")
-            prompts_video.append(prompt_video.strip())
+            prompts_video.append(prompt_video)
         else:
             print(f"\033[91m🤖 Erro ao gerar prompt de vídeo {i+1}: {resposta_vid.text}")
 
@@ -178,7 +196,7 @@ options.add_argument(rf"--profile-directory={config.chrome_profile_dir}")
 #options.add_argument("--headless")
 
 # Carrega as posições
-with open("posicoes.json", "r") as f:
+with open("IAuto/posicoes.json", "r") as f:
     posicoes = json.load(f)
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
@@ -189,12 +207,6 @@ try:
     print("\n")
     print(f"\033[95m🧙‍♂️ [Leonardo AI] \033[94mConectado a API com sucesso.")
     time.sleep(7)
-
-    #driver.execute_script("window.scrollTo(0, document.body.scrollHeight / 2);")
-    #image_creation_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//*[contains(text(),'Image Creation')]")))
-    #image_creation_button.click()
-    #print(f"\033[95m🧙‍♂️ [Leonardo AI] \033[94mEntrando no Image Creation.")
-    #time.sleep(5)
 
     print(f"\033[95m🧙‍♂️ [Leonardo AI] \033[94mConfigurando resolução da imagem.")
     pre_prompt_button = wait.until(EC.element_to_be_clickable((
@@ -244,7 +256,7 @@ try:
         print(f"\033[95m🧙‍♂️ [Leonardo AI] \033[94mIniciando geração de imagem.")
 
         print(f"\033[95m🧙‍♂️ [Leonardo AI] \033[94mAguardando a imagem ser gerada.")
-        time.sleep(40)
+        time.sleep(10)
 
         x = posicoes["abrir_img"]["x"]
         y = posicoes["abrir_img"]["y"]
@@ -272,8 +284,10 @@ try:
     # Caminho onde as imagens foram salvas pela Leonardo AI
     caminho_imagens = config.caminho_imagens
 
-    # Lista todas as imagens PNG ou JPG da pasta
-    imagens_geradas = glob.glob(os.path.join(caminho_imagens, "*.png")) + glob.glob(os.path.join(caminho_imagens, "*.jpg"))
+    imagens_geradas = sorted(
+    glob.glob(os.path.join(caminho_imagens, "*.png")) + glob.glob(os.path.join(caminho_imagens, "*.jpg")),
+    key=os.path.getmtime
+    )   
 
     print(f"\033[95m🧩 [Hailuo AI] \033[94mConectado a API com sucesso.")
     time.sleep(2)
@@ -283,27 +297,34 @@ try:
     # Abre uma nova aba e acessa o site da Hailuo AI
     driver.execute_script("window.open('');")
     driver.switch_to.window(driver.window_handles[-1])
-    print(f"\033[95m🧩 [Hailuo AI] \033[94mSite sendo preparado...")
+
+    # Ordena as imagens pela data de modificação (garante ordem correta de download)
+    imagens_geradas = sorted(
+        glob.glob(os.path.join(caminho_imagens, "*.png")) + glob.glob(os.path.join(caminho_imagens, "*.jpg")),
+        key=os.path.getmtime
+    )
 
     # Para cada imagem
     for idx, imagem_path in enumerate(imagens_geradas):
         driver.get("https://hailuoai.video/create")
-        print(f"\033[95m🧩 [Hailuo AI] \033[94mPágina carregando...")
-        time.sleep(10)
+        time.sleep(5)
 
         print(f"\033[95m🧩 [Hailuo AI] \033[94mProcessando imagem {idx + 1}/{len(imagens_geradas)}:")
 
+        # Clica no botão de anexo de imagem
         x = posicoes["anexo_anim"]["x"]
         y = posicoes["anexo_anim"]["y"]
         pyautogui.moveTo(x, y)
         pyautogui.click()
         time.sleep(2)
 
+        # Escreve o caminho da imagem e envia
         pyautogui.write(imagem_path)
         pyautogui.press("enter")
         print(f"\033[95m🧩 [Hailuo AI] \033[94mImagem enviada.")
         time.sleep(8)
 
+        # Clica no campo de texto para inserir o prompt
         x = posicoes["texto_anim"]["x"]
         y = posicoes["texto_anim"]["y"]
         pyautogui.moveTo(x, y)
@@ -311,6 +332,7 @@ try:
         time.sleep(0.5)
         pyautogui.click()
 
+        # Garante que há um prompt disponível para essa imagem
         if idx < len(prompts_video):
             prompt_video = prompts_video[idx]
         else:
@@ -326,7 +348,7 @@ try:
         pyautogui.moveTo(x, y)
         pyautogui.click()
         print(f"\033[95m🧩 [Hailuo AI] \033[94mAnimação sendo gerada.")
-        time.sleep(5)
+        time.sleep(10)
 
         # Clica para abrir vídeo
         x = posicoes["abrir_anim"]["x"]
