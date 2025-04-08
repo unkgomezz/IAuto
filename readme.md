@@ -27,19 +27,21 @@ IAuto/
 
 ## 🔧 Instalação
 
-1. Clone o repositório
-```bash
-git clone https://github.com/seu-usuario/IAuto.git
-cd IAuto
-```
-
-2. Crie um ambiente virtual (recomendado)
+1. Crie um ambiente virtual (recomendado)
 ```bash
 python -m venv venv
 # Windows:
 venv\Scripts\activate
 # Linux/macOS:
 source venv/bin/activate
+# Entrar na pasta venv:
+cd venv
+```
+
+1. Clone o repositório
+```bash
+git clone https://github.com/unkgomezz/IAutoAPI.git
+cd IAutoAPI
 ```
 
 3. Instale as dependências
@@ -65,10 +67,10 @@ pip install -r requirements.txt
 ## ▶️ Como Usar
 
 1. Execute o calibrador de posições (você irá clicar nas áreas necessárias):
+- (Com o site Leonardo AI e Hailuo AI abertos)
 ```bash
 python calib.py
 ```
-
 2. Escreva ou cole a letra da música no `letra.txt`.
 
 3. Execute o script principal:
@@ -79,4 +81,4 @@ python main.py
 ## ✨ Créditos
 
 💻 Desenvolvido por **Gomezz**  
-📅 Versão: 1.1 — 08/04/2025
+📅 Versão: 1.2 — 08/04/2025

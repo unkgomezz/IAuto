@@ -12,7 +12,7 @@
 #   |                                                                                                                              |
 #   |______________________________________________________________________________________________________________________________|
 #   |                                                                                                                              |  
-#   |                                       IAuto Full - Version 1.1 - 08/04/2025 - By Gomezz                                      |
+#   |                                       IAuto Full - Version 1.2 - 08/04/2025 - By Gomezz                                      |
 #   |                                       = Using Deep Seek V3, Leonardo AI and Hailuo AI =                                      |
 #   |______________________________________________________________________________________________________________________________|
                                                                                                         
@@ -196,7 +196,7 @@ options.add_argument(rf"--profile-directory={config.chrome_profile_dir}")
 #options.add_argument("--headless")
 
 # Carrega as posições
-with open("IAuto/posicoes.json", "r") as f:
+with open("posicoes.json", "r") as f:
     posicoes = json.load(f)
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
@@ -256,7 +256,7 @@ try:
         print(f"\033[95m🧙‍♂️ [Leonardo AI] \033[94mIniciando geração de imagem.")
 
         print(f"\033[95m🧙‍♂️ [Leonardo AI] \033[94mAguardando a imagem ser gerada.")
-        time.sleep(10)
+        time.sleep(40)
 
         x = posicoes["abrir_img"]["x"]
         y = posicoes["abrir_img"]["y"]
@@ -348,7 +348,7 @@ try:
         pyautogui.moveTo(x, y)
         pyautogui.click()
         print(f"\033[95m🧩 [Hailuo AI] \033[94mAnimação sendo gerada.")
-        time.sleep(10)
+        time.sleep(300)
 
         # Clica para abrir vídeo
         x = posicoes["abrir_anim"]["x"]

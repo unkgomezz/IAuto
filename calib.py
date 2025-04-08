@@ -12,7 +12,7 @@
 #   |                                                                                                                              |
 #   |______________________________________________________________________________________________________________________________|
 #   |                                                                                                                              |  
-#   |                                       IAuto Full - Version 1.1 - 08/04/2025 - By Gomezz                                      |
+#   |                                       IAuto Full - Version 1.2 - 08/04/2025 - By Gomezz                                      |
 #   |                                       = Using Deep Seek V3, Leonardo AI and Hailuo AI =                                      |
 #   |______________________________________________________________________________________________________________________________|
 
@@ -89,7 +89,7 @@ for nome in elementos:
     print(f"\033[95m🧠 [IAuto] \033[94mPosição do {nome} salvo como: {pos}")
 
 # Salvar no arquivo
-with open("IAuto/posicoes.json", "w") as f:
+with open("posicoes.json", "w") as f:
     json.dump(posicoes, f, indent=4)
 
 # Mensagem final estilizada
